@@ -41,7 +41,7 @@ export const App:FC = () => {
             return task
         }))
 
-    },[tasks]);
+    },[]);
 
     const backlogTasks = useMemo(() => tasks.filter(task => task.status === 'BACKLOG'), [tasks]);
     const doneTasks = useMemo(() => tasks.filter(task => task.status === 'DONE'), [tasks]);
