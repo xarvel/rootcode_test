@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
 import {Task as TaskType, TaskStatus} from "./initial-data";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     container: {
         margin: '8px',
         border: '1px solid lightgrey',

@@ -35,7 +35,6 @@ export const Task:FC<TaskProps> = ({ task, index}) => {
                     {...{ref: provided.innerRef} as any}
                     {...provided.dragHandleProps}
                 >
-
                     <CardContent>
                         <Typography variant="h5" component="h2">
                             {task.title}
