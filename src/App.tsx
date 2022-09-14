@@ -54,17 +54,17 @@ export const App:FC = () => {
             <Box className={classes.container}>
                 <Column
                     title={'Backlog'}
-                    id='BACKLOG'
+                    status='BACKLOG'
                     tasks={backlogTasks}
                 />
                 <Column
                     title={'In Progress'}
-                    id={'IN_PROGRESS'}
+                    status={'IN_PROGRESS'}
                     tasks={inProgressTasks}
                 />
                 <Column
                     title={'Done'}
-                    id='DONE'
+                    status='DONE'
                     tasks={doneTasks}
                 />
             </Box>

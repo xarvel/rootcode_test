@@ -4,7 +4,7 @@ import {Task} from './Task';
 import {Box} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
-import {Task as TaskType} from "./initial-data";
+import {Task as TaskType, TaskStatus} from "./initial-data";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -25,11 +25,11 @@ const useStyles = makeStyles((theme) => ({
 
 type ColumnProps = {
     title: string
-    tasks: any,
-    id: string
+    tasks: TaskType[],
+    status: TaskStatus
 }
 
-export const Column:FC<ColumnProps> = ( {title, tasks, id}) => {
+export const Column:FC<ColumnProps> = ( {title, tasks, status}) => {
     const classes = useStyles();
 
     return (
@@ -37,7 +37,7 @@ export const Column:FC<ColumnProps> = ( {title, tasks, id}) => {
             <Typography variant="h2" component="h2">
                 {title}
             </Typography>
-            <Droppable droppableId={id}>
+            <Droppable droppableId={status}>
                 {(provided, snapshot) => (
                     <Box
                         {...{ref: provided.innerRef} as any}
