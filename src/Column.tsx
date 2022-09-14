@@ -6,7 +6,6 @@ import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
 import {Task as TaskType} from "./initial-data";
 
-
 const useStyles = makeStyles((theme) => ({
     container: {
         margin: '8px',
@@ -24,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
 type ColumnProps = {
     title: string
     tasks: any,
@@ -39,9 +37,7 @@ export const Column:FC<ColumnProps> = ( {title, tasks, id}) => {
             <Typography variant="h2" component="h2">
                 {title}
             </Typography>
-            <Droppable
-                droppableId={id}
-            >
+            <Droppable droppableId={id}>
                 {(provided, snapshot) => (
                     <Box
                         {...{ref: provided.innerRef} as any}

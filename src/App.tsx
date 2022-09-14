@@ -1,10 +1,10 @@
-import React, {useState, FC, useCallback} from 'react';
+import React, {useState, FC, useCallback, useMemo} from 'react';
 import '@atlaskit/css-reset';
-import { DragDropContext } from 'react-beautiful-dnd';
-import initialData from './initial-data';
+import {DragDropContext, DropResult} from 'react-beautiful-dnd';
 import {Column} from './Column';
 import {Box} from '@material-ui/core';
 import {makeStyles} from "@material-ui/core/styles";
+import {defaultTasks, TaskStatus} from "./initial-data";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -13,10 +13,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const App:FC = () => {
-    const [tasks, setTasks] = useState<any>(initialData)
+    const [tasks, setTasks] = useState(defaultTasks)
     const classes = useStyles()
 
-    const handleDragEnd = useCallback((result: any) => {
+    const handleDragEnd = useCallback((result: DropResult) => {
         const { destination, source, draggableId } = result;
 
         if (!destination) {
@@ -30,79 +30,43 @@ export const App:FC = () => {
             return;
         }
 
-        const home = tasks.columns[source.droppableId as any] as any;
-        const foreign = tasks.columns[destination.droppableId as any] as any;
+        setTasks(tasks => tasks.map(task => {
+            if(task.id === draggableId){
+                return {
+                    ...task,
+                    status: destination.droppableId as TaskStatus
+                }
+            }
 
-        if (home === foreign) {
-            const newTaskIds = Array.from(home.taskIds);
-            newTaskIds.splice(source.index, 1);
-            newTaskIds.splice(destination.index, 0, draggableId);
+            return task
+        }))
 
-            const newHome = {
-                ...home,
-                taskIds: newTaskIds,
-            };
-
-            const newState = {
-                ...tasks,
-                columns: {
-                    ...tasks.columns,
-                    [newHome.id]: newHome,
-                },
-            };
-
-            setTasks(newState);
-            return;
-        }
-
-        // moving from one list to another
-        const homeTaskIds = Array.from(home.taskIds);
-        homeTaskIds.splice(source.index, 1);
-        const newHome = {
-            ...home,
-            taskIds: homeTaskIds,
-        };
-
-        const foreignTaskIds = Array.from(foreign.taskIds);
-        foreignTaskIds.splice(destination.index, 0, draggableId);
-        const newForeign = {
-            ...foreign,
-            taskIds: foreignTaskIds,
-        };
-
-        const newState = {
-            ...tasks,
-            columns: {
-                ...tasks.columns,
-                [newHome.id]: newHome,
-                [newForeign.id]: newForeign,
-            },
-        };
-
-        setTasks(newState);
     },[tasks]);
 
+    const backlogTasks = useMemo(() => tasks.filter(task => task.status === 'BACKLOG'), [tasks]);
+    const doneTasks = useMemo(() => tasks.filter(task => task.status === 'DONE'), [tasks]);
+    const inProgressTasks = useMemo(() => tasks.filter(task => task.status === 'IN_PROGRESS'), [tasks]);
 
     return (
         <DragDropContext
             onDragEnd={handleDragEnd}
         >
             <Box className={classes.container}>
-                {tasks.columnOrder.map((columnId: string) => {
-                    const column = tasks.columns[columnId];
-                    const tasksByColumn = column.taskIds.map(
-                        (taskId: string) => tasks.tasks[taskId],
-                    );
-
-                    return (
-                        <Column
-                            key={column.id}
-                            title={column.title}
-                            id={column.id}
-                            tasks={tasksByColumn}
-                        />
-                    );
-                })}
+                <Column
+                    title={'Backlog'}
+                    id='BACKLOG'
+                    tasks={backlogTasks}
+                />
+                <Column
+                    title={'In Progress'}
+                    id={'IN_PROGRESS'}
+                    tasks={inProgressTasks}
+                />
+                <Column
+                    title={'Done'}
+                    id='DONE'
+                    tasks={doneTasks}
+                />
             </Box>
         </DragDropContext>
     )
